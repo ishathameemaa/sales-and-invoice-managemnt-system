@@ -13,7 +13,7 @@ require("./controllers/invoiceController.js")
 dotenv.config();
 
 const app = express();
-const port = process.env.PORT || 5000;
+const port = process.env.PORT || 6000;
 
 // Middleware
 app.use(express.json({ limit: "25mb" }));
