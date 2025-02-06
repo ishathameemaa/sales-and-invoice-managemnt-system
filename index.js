@@ -21,12 +21,12 @@ app.use(cookieParser());
 app.use(express.urlencoded({ extended: true }));
 
 // CORS configuration
-app.use(
-  cors({
-    origin: "http://localhost:5173",
-    credentials: true,
-  })
-);
+// app.use(
+//   cors({
+//     origin: "https://localhost:5173",
+//     credentials: true,
+//   })
+// );
 
 // MongoDB Connection
 mongoose
