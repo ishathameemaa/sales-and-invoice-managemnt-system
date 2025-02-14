@@ -1,6 +1,5 @@
 const express = require("express");
 const mongoose = require("mongoose");
-const cors = require("cors");
 const cookieParser = require("cookie-parser");
 const dotenv = require("dotenv");
 const adminRoutes = require("./routes/admin.route.js");
@@ -23,12 +22,12 @@ app.use(cookieParser());
 app.use(express.urlencoded({ extended: true }));
 
 // CORS configuration
-app.use(
-  cors({
-    origin: "https://dashboardstack.netlify.app",
-    credentials: true,
-  })
-);
+// app.use(
+//   cors({
+//     origin: "https://dashboardstack.netlify.app",
+//     credentials: true,
+//   })
+// );
 
 // MongoDB Connection
 mongoose
