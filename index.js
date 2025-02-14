@@ -1,12 +1,15 @@
 const express = require("express");
 const mongoose = require("mongoose");
+const cors = require("cors");
 const cookieParser = require("cookie-parser");
 const dotenv = require("dotenv");
 const adminRoutes = require("./routes/admin.route.js");
 const productRoutes = require("./routes/product.route.js");
 const customerRoutes = require('./routes/customerRoutes.js');
-const invoiceRoutes = require("./routes/routes.invoiceRoutes.js");
-require("./controllers/invoiceController.js")
+const invoiceRoute = require("./routes/one.invoiceRoutes.js");
+// require("./controllers/invoiceController.js")
+const  invoiceRoutes = require('./routes/invoices.routes.js')
+
 
 
 dotenv.config();
@@ -20,7 +23,12 @@ app.use(cookieParser());
 app.use(express.urlencoded({ extended: true }));
 
 // CORS configuration
-
+app.use(
+  cors({
+    origin: "https://dashboardstack.netlify.app",
+    credentials: true,
+  })
+);
 
 // MongoDB Connection
 mongoose
@@ -34,7 +42,8 @@ mongoose
 app.use("/api/admin", adminRoutes);
 app.use("/api/products", productRoutes);
 app.use('/api/customer', customerRoutes)
-app.use("/api/invoices", invoiceRoutes);
+app.use("/api/invoices", invoiceRoute);
+app.use("/api/invo", invoiceRoutes);
 
 // Root Route
 app.get("/", (req, res) => {

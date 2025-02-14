@@ -13,8 +13,10 @@ const createInvoice = async (req, res) => {
       customerEmail,
       customerPhone,
       status,
+      products,
     } = req.body;
-
+    console.log(products,"**",req.body);
+    
     const invoiceNumber = `INV${Date.now()}`;
     const newInvoice = new Invoice({
       invoiceNumber,
@@ -23,7 +25,9 @@ const createInvoice = async (req, res) => {
       customerName,
       customerEmail,
       customerPhone,
+      products,
       status,
+
     });
 
     await newInvoice.save();
@@ -44,6 +48,45 @@ const getInvoices = async (req, res) => {
     res.status(400).json({ error: err.message });
   }
 };
+const updateInvoice = async (req, res) => {
+  try {
+    console.log(req.body, "****");
+    const { id } = req.params;
+    const { paidAmount } = req.body;
+
+    const invoice = await Invoice.findById(id);
+
+    if (!invoice) {
+      return res.status(404).json({ message: "Invoice not found" });
+    }
+
+    // Convert values to numbers
+    const newPaidAmount = Number(invoice.paidAmount) + Number(paidAmount);
+    const amountDue = Number(invoice.amountDue);
+
+    // Determine status based on the new paid amount
+    let status = "Partially Paid";
+    if (newPaidAmount >= amountDue) {
+      status = "Paid";
+    }
+    console.log(newPaidAmount,status,id);
+    
+
+    // Update the invoice
+    const updatedInvoice = await Invoice.findByIdAndUpdate(
+      id,
+      { paidAmount: newPaidAmount, status },
+      { new: true }
+    );
+
+    res.status(200).json({ message: "Invoice updated successfully", invoice: updatedInvoice });
+  } catch (err) {
+    console.error("Error updating invoice:", err.message);
+    res.status(400).json({ error: err.message });
+  }
+};
+
+
 
 // Filter invoices by status or search query
 const filterInvoices = async (req, res) => {
@@ -107,6 +150,7 @@ cron.schedule("0 0 * * *", async () => {
 
 module.exports = {
   createInvoice,
+  updateInvoice,
   getInvoices,
   filterInvoices,
   sendPaymentFailureNotification,

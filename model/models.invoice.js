@@ -32,6 +32,10 @@ const invoiceSchema = new mongoose.Schema({
     type: String,
     required: true,
   },
+  products: {
+    type: [Object], 
+    required: true,
+},
 }, {
   timestamps: true,
 });

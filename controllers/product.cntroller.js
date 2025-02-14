@@ -5,7 +5,7 @@ const getProducts = async (req, res) => {
   try {
     console.log("Received request to fetch products.");
     const products = await Product.find();
-    console.log("Fetched products:", products);
+    // console.log("Fetched products:", products);
     res.status(200).json(products);
   } catch (error) {
     console.error("Error fetching products:", error);
@@ -15,7 +15,7 @@ const getProducts = async (req, res) => {
 
 // Create a new product
 const createProduct = async (req, res) => {
-  const { name, category, price, stock, sales } = req.body;
+  const { name, category, price, stock } = req.body;
 
   if (!name || !category || !price || !stock) {
     console.warn("Missing fields in product creation:", req.body);
@@ -23,7 +23,7 @@ const createProduct = async (req, res) => {
   }
 
   try {
-    const product = new Product({ name, category, price, stock, sales });
+    const product = new Product({ name, category, price, stock,  });
     await product.save();
     console.log("Created product:", product);
     res.status(201).json(product);
