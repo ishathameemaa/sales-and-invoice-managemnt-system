@@ -3,6 +3,7 @@ const mongoose = require("mongoose");
 const cookieParser = require("cookie-parser");
 const dotenv = require("dotenv");
 const adminRoutes = require("./routes/admin.route.js");
+// const cors = require("cors");
 const productRoutes = require("./routes/product.route.js");
 const customerRoutes = require('./routes/customerRoutes.js');
 const invoiceRoute = require("./routes/one.invoiceRoutes.js");
@@ -14,7 +15,7 @@ const  invoiceRoutes = require('./routes/invoices.routes.js')
 dotenv.config();
 
 const app = express();
-const port = process.env.PORT || 6000;
+const port = process.env.PORT || 5000;
 
 // Middleware
 app.use(express.json({ limit: "25mb" }));
@@ -22,7 +23,12 @@ app.use(cookieParser());
 app.use(express.urlencoded({ extended: true }));
 
 // CORS configuration
-        
+// app.use(cors({
+//   origin: "http://localhost:5173", 
+//   credentials: true,
+// }));
+
+
 
 // MongoDB Connection
 mongoose
