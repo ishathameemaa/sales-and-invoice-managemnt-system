@@ -2,6 +2,7 @@ require("dotenv").config();
 const Invoice = require("../model/models.invoice");
 const nodemailer = require("nodemailer");
 const cron = require("node-cron");
+const Product = require("../model/product.model");
 
 // Create a new invoice
 const createInvoice = async (req, res) => {
@@ -14,21 +15,53 @@ const createInvoice = async (req, res) => {
       customerPhone,
       status,
       products,
+
     } = req.body;
     console.log(products,"**",req.body);
     
     const invoiceNumber = `INV${Date.now()}`;
+    for (const item of products) {
+      const product = await Product.findOne({ name: item.name });
+      const purchaseQuantity = Number(item.quantity);
+      if (!product) {
+        return res.status(404).json({ message: `Product ${item.name} not found` });
+      }
+
+      if (product.stock < purchaseQuantity) {
+        return res.status(400).json({ message: `Insufficient stock for ${item.name}` });
+      }
+
+      // Deduct the purchased quantity
+      product.stock -= purchaseQuantity;
+      await product.save();
+    }
+    const paymentHistory = [];
+    if (Number(paidAmount) > 0) {
+      console.log("uusuudjshdh");
+      
+      paymentHistory.push({
+        amountPaid: Number(paidAmount),
+        paymentDate: new Date(), // Store date and time
+      });
+    }
+    console.log(paymentHistory,"@@@");
+    
+
     const newInvoice = new Invoice({
       invoiceNumber,
-      amountDue,
-      paidAmount,
+      amountDue: Number(amountDue), 
+      paidAmount: Number(paidAmount), 
+     
       customerName,
       customerEmail,
       customerPhone,
       products,
       status,
+      paymentHistory,
 
     });
+
+
 
     await newInvoice.save();
     res
@@ -48,6 +81,7 @@ const getInvoices = async (req, res) => {
     res.status(400).json({ error: err.message });
   }
 };
+
 const updateInvoice = async (req, res) => {
   try {
     console.log(req.body, "****");
@@ -59,6 +93,7 @@ const updateInvoice = async (req, res) => {
     if (!invoice) {
       return res.status(404).json({ message: "Invoice not found" });
     }
+   
 
     // Convert values to numbers
     const newPaidAmount = Number(invoice.paidAmount) + Number(paidAmount);
@@ -70,12 +105,20 @@ const updateInvoice = async (req, res) => {
       status = "Paid";
     }
     console.log(newPaidAmount,status,id);
+
+    invoice.paymentHistory.push({
+      amountPaid: Number(paidAmount),
+      paymentDate: new Date(),
+    });
+    
     
 
     // Update the invoice
     const updatedInvoice = await Invoice.findByIdAndUpdate(
       id,
-      { paidAmount: newPaidAmount, status },
+      { paidAmount: newPaidAmount, status,
+        paymentHistory: invoice.paymentHistory,
+       },
       { new: true }
     );
 

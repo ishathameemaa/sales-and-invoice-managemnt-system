@@ -22,12 +22,7 @@ app.use(cookieParser());
 app.use(express.urlencoded({ extended: true }));
 
 // CORS configuration
-// app.use(
-//   cors({
-//     origin: "https://dashboardstack.netlify.app",
-//     credentials: true,
-//   })
-// );
+
 
 // MongoDB Connection
 mongoose

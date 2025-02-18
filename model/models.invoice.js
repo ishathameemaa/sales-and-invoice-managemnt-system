@@ -17,7 +17,7 @@ const invoiceSchema = new mongoose.Schema({
   },
   status: {
     type: String,
-    enum: ['Pending', 'Paid', 'Payment Successful'],
+    enum: ['Pending', 'Paid', 'Payment Successful','Partially Paid'],
     default: 'Pending',
   },
   customerName: {
@@ -36,6 +36,10 @@ const invoiceSchema = new mongoose.Schema({
     type: [Object], 
     required: true,
 },
+paymentHistory: {
+  type: [Object], 
+},
+
 }, {
   timestamps: true,
 });
